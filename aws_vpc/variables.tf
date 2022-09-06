@@ -12,22 +12,30 @@ variable "cidr" {
 
 variable "public_subnets" {
   description = "List of public subnets"
+  type        = list(any)
+  default     = []
 }
 
 variable "private_subnets" {
   description = "List of private subnets"
+  type        = list(any)
+  default     = []
 }
 
 variable "db_subnets" {
   description = "List of public subnets"
+  type        = list(any)
+  default     = []
 }
 
 variable "db_subnets_with_internet" {
   description = "Enable internet in DB subnets"
 }
+
 variable "private_subnets_with_internet" {
   description = "Enable internet in private subnets"
 }
+
 variable "private_subnets_single_nat" {
   description = "Single NAT for all private subnets"
 }
@@ -38,9 +46,12 @@ variable "one_nat_gateway_per_az" {
 
 variable "additional_tags" {
   description = "Additional tags to add"
+  type        = list(any)
   default     = {}
 }
 
 variable "availability_zones" {
   description = "List of availability zones"
+  type        = list(any)
+  default     = []
 }
