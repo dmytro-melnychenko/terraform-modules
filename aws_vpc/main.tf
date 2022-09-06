@@ -15,7 +15,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-vpc-${var.environment}",
       Environment = var.environment
     }
@@ -26,7 +26,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-igw-${var.environment}",
       Environment = var.environment
     }
@@ -40,7 +40,7 @@ resource "aws_nat_gateway" "main" {
   depends_on    = [aws_internet_gateway.main]
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-nat-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
@@ -52,7 +52,7 @@ resource "aws_eip" "nat" {
   vpc   = true
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-eip-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
@@ -67,7 +67,7 @@ resource "aws_subnet" "db" {
 
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-db-subnet-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
@@ -81,7 +81,7 @@ resource "aws_subnet" "private" {
   count             = length(var.private_subnets)
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-private-subnet-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
@@ -97,7 +97,7 @@ resource "aws_subnet" "public" {
 
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-public-subnet-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
@@ -108,7 +108,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name = "${var.name}-routing-table-public"
     }
   )
@@ -126,7 +126,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-routing-table-private-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
@@ -145,7 +145,7 @@ resource "aws_route_table" "db" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    module.this.tags, {
+    var.additional_tags, {
       Name        = "${var.name}-routing-table-db-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
