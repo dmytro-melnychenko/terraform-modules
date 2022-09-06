@@ -44,11 +44,11 @@ variable "one_nat_gateway_per_az" {
   description = "One NAT per AZ"
 }
 
-variable "additional_tags" {
-  description = "Additional tags to add"
-  type        = list(string)
-  default     = []
-}
+# variable "additional_tags" {
+#   description = "Additional tags to add"
+#   type        = list(string)
+#   default     = []
+# }
 
 variable "availability_zones" {
   description = "List of availability zones"

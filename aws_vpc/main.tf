@@ -14,23 +14,20 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-vpc-${var.environment}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-vpc-${var.environment}",
+    Environment = var.environment
+  }
+
 }
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-igw-${var.environment}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-igw-${var.environment}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_nat_gateway" "main" {
@@ -39,24 +36,20 @@ resource "aws_nat_gateway" "main" {
   subnet_id     = element(aws_subnet.public.*.id, count.index)
   depends_on    = [aws_internet_gateway.main]
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-nat-${var.environment}-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-nat-${var.environment}-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_eip" "nat" {
   count = var.private_subnets_with_internet ? local.nat_gateway_count : 0
   vpc   = true
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-eip-${var.environment}-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-eip-${var.environment}-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_subnet" "db" {
@@ -66,12 +59,10 @@ resource "aws_subnet" "db" {
   count             = length(var.db_subnets)
 
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-db-subnet-${var.environment}-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-db-subnet-${var.environment}-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_subnet" "private" {
@@ -80,12 +71,10 @@ resource "aws_subnet" "private" {
   availability_zone = element(var.availability_zones, count.index)
   count             = length(var.private_subnets)
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-private-subnet-${var.environment}-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-private-subnet-${var.environment}-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_subnet" "public" {
@@ -96,23 +85,18 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-public-subnet-${var.environment}-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-public-subnet-${var.environment}-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
-  tags = merge(
-    var.additional_tags, {
-      Name = "${var.name}-routing-table-public"
-    }
-  )
-
+  tags = {
+    Name = "${var.name}-routing-table-public"
+  }
 }
 
 resource "aws_route" "public" {
@@ -125,12 +109,11 @@ resource "aws_route_table" "private" {
   count  = length(var.private_subnets)
   vpc_id = aws_vpc.main.id
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-routing-table-private-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-routing-table-private-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
+
 }
 
 resource "aws_route" "private" {
@@ -144,12 +127,10 @@ resource "aws_route_table" "db" {
   count  = var.db_subnets_with_internet ? length(var.db_subnets) : 0
   vpc_id = aws_vpc.main.id
 
-  tags = merge(
-    var.additional_tags, {
-      Name        = "${var.name}-routing-table-db-${format("%03d", count.index + 1)}",
-      Environment = var.environment
-    }
-  )
+  tags = {
+    Name        = "${var.name}-routing-table-db-${format("%03d", count.index + 1)}",
+    Environment = var.environment
+  }
 }
 
 resource "aws_route" "db" {
