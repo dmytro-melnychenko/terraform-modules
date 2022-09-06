@@ -36,6 +36,9 @@ variable "one_nat_gateway_per_az" {
   description = "One NAT per AZ"
 }
 
+variable "additional_tags" {
+  description = "Additional tags to add"
+}
 
 variable "availability_zones" {
   description = "List of availability zones"
