@@ -15,8 +15,8 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-vpc-${var.environment}",
+    module.this.tags, {
+      Name        = "${var.name}-vpc-${var.environment}",
       Environment = var.environment
     }
   )
@@ -26,8 +26,8 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-igw-${var.environment}",
+    module.this.tags, {
+      Name        = "${var.name}-igw-${var.environment}",
       Environment = var.environment
     }
   )
@@ -40,8 +40,8 @@ resource "aws_nat_gateway" "main" {
   depends_on    = [aws_internet_gateway.main]
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-nat-${var.environment}-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-nat-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -52,8 +52,8 @@ resource "aws_eip" "nat" {
   vpc   = true
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-eip-${var.environment}-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-eip-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -67,8 +67,8 @@ resource "aws_subnet" "db" {
 
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-db-subnet-${var.environment}-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-db-subnet-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -81,8 +81,8 @@ resource "aws_subnet" "private" {
   count             = length(var.private_subnets)
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-private-subnet-${var.environment}-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-private-subnet-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -97,8 +97,8 @@ resource "aws_subnet" "public" {
 
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-public-subnet-${var.environment}-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-public-subnet-${var.environment}-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -108,8 +108,8 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    local.common_tags, {
-      Name = "${local.name}-routing-table-public"
+    module.this.tags, {
+      Name = "${var.name}-routing-table-public"
     }
   )
 
@@ -126,8 +126,8 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-routing-table-private-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-routing-table-private-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -145,8 +145,8 @@ resource "aws_route_table" "db" {
   vpc_id = aws_vpc.main.id
 
   tags = merge(
-    local.common_tags, {
-      Name        = "${local.name}-routing-table-db-${format("%03d", count.index + 1)}",
+    module.this.tags, {
+      Name        = "${var.name}-routing-table-db-${format("%03d", count.index + 1)}",
       Environment = var.environment
     }
   )
@@ -187,11 +187,11 @@ resource "aws_route_table_association" "public" {
 # }
 
 # resource "aws_cloudwatch_log_group" "main" {
-#   name = "${local.name}-cloudwatch-log-group"
+#   name = "${var.name}-cloudwatch-log-group"
 # }
 
 # resource "aws_iam_role" "vpc-flow-logs-role" {
-#   name = "${local.name}-vpc-flow-logs-role"
+#   name = "${var.name}-vpc-flow-logs-role"
 
 #   assume_role_policy = <<EOF
 # {
@@ -211,7 +211,7 @@ resource "aws_route_table_association" "public" {
 # }
 
 # resource "aws_iam_role_policy" "vpc-flow-logs-policy" {
-#   name = "${local.name}-vpc-flow-logs-policy"
+#   name = "${var.name}-vpc-flow-logs-policy"
 #   role = aws_iam_role.vpc-flow-logs-role.id
 
 #   policy = <<EOF
