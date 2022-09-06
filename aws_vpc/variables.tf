@@ -46,8 +46,8 @@ variable "one_nat_gateway_per_az" {
 
 variable "additional_tags" {
   description = "Additional tags to add"
-  type        = list(any)
-  default     = {}
+  type        = list(string)
+  default     = []
 }
 
 variable "availability_zones" {
