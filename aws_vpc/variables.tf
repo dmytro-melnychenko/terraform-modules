@@ -38,6 +38,7 @@ variable "one_nat_gateway_per_az" {
 
 variable "additional_tags" {
   description = "Additional tags to add"
+  default     = {}
 }
 
 variable "availability_zones" {
